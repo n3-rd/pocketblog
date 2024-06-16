@@ -14,27 +14,22 @@
 		<Card.Content>
 			<form method="POST" action="?/register">
 				<div class="grid gap-4">
-					<div class="grid grid-cols-2 gap-4">
-						<div class="grid gap-2">
-							<Label for="first-name">First name</Label>
-							<Input id="first-name" placeholder="Max" required />
-						</div>
-						<div class="grid gap-2">
-							<Label for="last-name">Last name</Label>
-							<Input id="last-name" placeholder="Robinson" required />
-						</div>
+					<div class="grid gap-2">
+						<Label for="name">First name</Label>
+						<Input id="name" name="name" placeholder="Max" required />
 					</div>
+
 					<div class="grid gap-2">
 						<Label for="email">Email</Label>
-						<Input id="email" type="email" placeholder="m@example.com" required />
+						<Input id="email" type="email" name="email" placeholder="m@example.com" required />
 					</div>
 					<div class="grid gap-2">
 						<Label for="password">Password</Label>
-						<Input id="password" type="password" />
+						<Input id="password" name="password" type="password" />
 					</div>
 					<div class="grid gap-2">
-						<Label for="confirm-password">Confirm Password</Label>
-						<Input id="confirm-password" type="password" />
+						<Label for="passwordConfirm">Confirm Password</Label>
+						<Input id="passwordConfirm" name="passwordConfirm" type="password" />
 					</div>
 					<Button type="submit" class="w-full">Create an account</Button>
 				</div>

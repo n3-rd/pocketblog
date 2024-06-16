@@ -42,6 +42,7 @@
 		"mode-watcher": "^0.3.0",
 		"pocketbase": "^0.21.3",
 		"tailwind-merge": "^2.3.0",
-		"tailwind-variants": "^0.2.1"
+		"tailwind-variants": "^0.2.1",
+		"uid": "^2.0.2"
 	}
 }

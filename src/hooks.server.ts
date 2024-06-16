@@ -1,5 +1,5 @@
 import PocketBase from 'pocketbase';
-import { serializeNonPOJOs } from '$lib/utils';
+import { serializeNonPOJOs } from '$lib/serialize';
 import { PUBLIC_DB_URL } from '$env/static/public';
 
 export const handle = async ({ event, resolve }) => {

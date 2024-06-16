@@ -21,9 +21,9 @@
 					</Table.Head>
 					<Table.Head>Name</Table.Head>
 					<Table.Head>Status</Table.Head>
-					<Table.Head class="hidden md:table-cell">Price</Table.Head>
-					<Table.Head class="hidden md:table-cell">Total Sales</Table.Head>
+					<Table.Head class="hidden md:table-cell">Authour</Table.Head>
 					<Table.Head class="hidden md:table-cell">Created at</Table.Head>
+					<Table.Head class="hidden md:table-cell">Edited at</Table.Head>
 					<Table.Head>
 						<span class="sr-only">Actions</span>
 					</Table.Head>
@@ -42,10 +42,10 @@
 					</Table.Cell>
 					<Table.Cell class="font-medium">Laser Lemonade Machine</Table.Cell>
 					<Table.Cell>
-						<Badge variant="outline">Draft</Badge>
+						<Badge variant="secondary">Published</Badge>
 					</Table.Cell>
-					<Table.Cell class="hidden md:table-cell">$499.99</Table.Cell>
-					<Table.Cell class="hidden md:table-cell">25</Table.Cell>
+					<Table.Cell class="hidden md:table-cell">Godwin</Table.Cell>
+					<Table.Cell class="hidden md:table-cell">2023-07-12 10:42 AM</Table.Cell>
 					<Table.Cell class="hidden md:table-cell">2023-07-12 10:42 AM</Table.Cell>
 					<Table.Cell>
 						<DropdownMenu.Root>
@@ -67,7 +67,7 @@
 		</Table.Root>
 	</Card.Content>
 	<Card.Footer>
-		<div class="text-muted-foreground text-xs">
+		<div class="text-xs text-muted-foreground">
 			Showing <strong>1-10</strong> of <strong>32</strong> products
 		</div>
 	</Card.Footer>
