@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import File from 'lucide-svelte/icons/file';
 	import ListFilter from 'lucide-svelte/icons/list-filter';
 	import CirclePlus from 'lucide-svelte/icons/circle-plus';
@@ -55,16 +55,10 @@
 						</Button>
 					</div>
 				</div>
-				<Tabs.Content value="all">
-					<AllPosts />
-				</Tabs.Content>
-				<Tabs.Content value="published">
-					<Published />
-				</Tabs.Content>
-				<Tabs.Content value="unpublished">
-					<UnPublished />
-				</Tabs.Content>
 			</Tabs.Root>
+			<slot />
 		</main>
 	</div>
-</div>
+</div> -->
+
+<slot />
