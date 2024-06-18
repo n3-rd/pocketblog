@@ -21,9 +21,11 @@
 	import { toast } from 'svelte-sonner';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import Loader from '$lib/components/ui/Loader.svelte';
+	import { goto } from '$app/navigation';
 
 	export let data;
 	export let form;
+	const post = data?.post;
 	console.log('data', data);
 
 	const carta = new Carta({
@@ -43,10 +45,11 @@
 		]
 	});
 
-	let title: string = '';
-	let slug: string = '';
-	let description = '';
-	let content: string = ``;
+	let title: string = post.title || '';
+	let slug: string = post.slug || '';
+	let description = post.description || '';
+	let content: string = post.content || '';
+	let published = post.published || false;
 	let tags = data?.tags;
 	let loading = false;
 
@@ -62,7 +65,7 @@
 		});
 	};
 
-	const addPost: SubmitFunction = () => {
+	const editPost: SubmitFunction = () => {
 		loading = true;
 
 		return async ({ update }) => {
@@ -87,10 +90,10 @@
 
 <form
 	method="POST"
-	action="?/create-post"
+	action="?/edit-post"
 	class="container flex flex-col items-center gap-4 pb-40 pt-14 text-left"
 	enctype="multipart/form-data"
-	use:enhance={addPost}
+	use:enhance={editPost}
 >
 	<div class="flex w-full max-w-[1200px] flex-col items-center gap-16">
 		<!-- title preview -->
@@ -213,7 +216,7 @@
 
 		<div class="actions flex items-center gap-2">
 			<Button class="flex items-center gap-2" type="submit">
-				<p>Publish</p>
+				<p>Update</p>
 				{#if loading}
 					<Loader />
 				{/if}
@@ -227,11 +230,25 @@
 				</Popover.Trigger>
 				<Popover.Content class="max-w-56">
 					<div class="flex flex-col gap-2">
-						<Button variant="outline">Unpublish</Button>
-						<Button
-							variant="outline"
-							class="border-red-500 text-red-500 hover:bg-red-500 hover:text-inherit">Delete</Button
-						>
+						{#if published}
+							<form method="POST" action="?/unpublish-post">
+								<Button type="submit" formaction="?/unpublish-post" variant="outline"
+									>Unpublish</Button
+								>
+							</form>
+						{:else}
+							<form method="POST" action="?/publish-post">
+								<Button type="submit" formaction="?/publish-post" variant="outline">Publish</Button>
+							</form>
+						{/if}
+						<form method="POST" action="?/delete-post">
+							<Button
+								type="submit"
+								variant="outline"
+								class="border-red-500 text-red-500 hover:bg-red-500 hover:text-inherit"
+								>Delete</Button
+							>
+						</form>
 					</div>
 				</Popover.Content>
 			</Popover.Root>

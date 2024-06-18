@@ -103,6 +103,13 @@ html.dark .carta-renderer {
 	}
 }
 
+.carta-theme__default.carta-editor {
+	@apply !border !border-input;
+}
+.carta-toolbar-right button {
+	@apply !text-muted-foreground;
+}
+
 /* Code dark mode */
 /* Only if you didn't specify a custom code theme */
 html.dark .shiki,

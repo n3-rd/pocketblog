@@ -41,6 +41,9 @@ importers:
       pocketbase:
         specifier: ^0.21.3
         version: 0.21.3
+      svelte-sonner:
+        specifier: ^0.3.24
+        version: 0.3.24(svelte@4.2.18)
       tailwind-merge:
         specifier: ^2.3.0
         version: 2.3.0
@@ -1940,6 +1943,11 @@ packages:
         optional: true
       typescript:
         optional: true
+
+  svelte-sonner@0.3.24:
+    resolution: {integrity: sha512-txuL0JBUs0v6qGrr0PGCsbXmKHuthdrAkfISYi8umuveF7+gINb6EXl6VmKY9aHhyxCqvVgqd6yophQNrnor4w==}
+    peerDependencies:
+      svelte: '>=3 <5'
 
   svelte@4.2.18:
     resolution: {integrity: sha512-d0FdzYIiAePqRJEb90WlJDkjUEx42xhivxN8muUBmfZnP+tzUgz12DJ2hRJi8sIHCME7jeK1PTMgKPSfTd8JrA==}
@@ -4171,6 +4179,10 @@ snapshots:
       postcss-load-config: 4.0.2(postcss@8.4.38)
       sass: 1.77.5
       typescript: 5.4.5
+
+  svelte-sonner@0.3.24(svelte@4.2.18):
+    dependencies:
+      svelte: 4.2.18
 
   svelte@4.2.18:
     dependencies:
