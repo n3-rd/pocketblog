@@ -45,14 +45,18 @@
 		"carta-md": "^4.2.1",
 		"clsx": "^2.1.1",
 		"dayjs": "^1.11.11",
+		"formsnap": "^1.0.1",
 		"isomorphic-dompurify": "^2.12.0",
 		"lucide-svelte": "^0.395.0",
 		"mode-watcher": "^0.3.0",
 		"pocketbase": "^0.21.3",
 		"relativeTime": "link:dayjs/plugin/relativeTime",
 		"svelte-sonner": "^0.3.24",
+		"svelte-tags-input": "^6.0.0",
+		"sveltekit-superforms": "^2.15.1",
 		"tailwind-merge": "^2.3.0",
 		"tailwind-variants": "^0.2.1",
-		"uid": "^2.0.2"
+		"uid": "^2.0.2",
+		"zod": "^3.23.8"
 	}
 }

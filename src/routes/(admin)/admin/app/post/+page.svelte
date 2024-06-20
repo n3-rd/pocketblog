@@ -21,6 +21,9 @@
 	import { toast } from 'svelte-sonner';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import Loader from '$lib/components/ui/Loader.svelte';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import { goto, invalidateAll } from '$app/navigation';
+	import TagInput from '$lib/components/layout/posts/TagInput.svelte';
 
 	export let data;
 	export let form;
@@ -47,8 +50,15 @@
 	let slug: string = '';
 	let description = '';
 	let content: string = ``;
-	let tags = data?.tags;
+	let tags: { id: any; name: any; checked: boolean }[];
 	let loading = false;
+	let keywords: never[] = [];
+	let keyValues: string;
+
+	$: {
+		keyValues = keywords.map((k) => k).join(', ');
+		tags = data?.tags;
+	}
 
 	const generateSlug = () => {
 		slug = slugify(title);
@@ -70,6 +80,11 @@
 			await update();
 		};
 	};
+
+	const goBack = () => {
+		goto('/admin/app/');
+	};
+
 	$: {
 		if (form?.success) {
 			toast.success('Post created successfully');
@@ -151,7 +166,7 @@
 		</div>
 
 		<!-- tags -->
-		<div class="tags flex w-full flex-col gap-1.5">
+		<div class="tags flex w-full flex-col gap-2">
 			{#each tags as tag}
 				<div class="flex w-full flex-row items-center gap-1.5">
 					<Checkbox id={tag.id} bind:checked={tag.checked} />
@@ -165,19 +180,57 @@
 					/>
 					<Label
 						for={tag.id}
-						class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+						class="text-lg font-medium capitalize leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 					>
 						{tag.name}
 					</Label>
 				</div>
 			{/each}
+
+			<div class="w-full">
+				<Dialog.Root>
+					<Dialog.Trigger>
+						<Button variant="secondary">Add new tag</Button>
+					</Dialog.Trigger>
+					<Dialog.Content>
+						<form
+							method="POST"
+							action="?/add-tag"
+							use:enhance={() => {
+								return async ({ result, update }) => {
+									invalidateAll();
+									if (result.status === 200) {
+										toast.success('Tag added successfully');
+									} else {
+										toast.error('Failed to add tag');
+									}
+								};
+							}}
+						>
+							<Dialog.Header>
+								<Dialog.Title>Add new tag</Dialog.Title>
+								<Dialog.Description>
+									<Input type="text" placeholder="Type tag name here" name="tag" />
+									<Dialog.Close>
+										<Button variant="default" type="submit" class="mt-4 w-full">Add tag</Button>
+									</Dialog.Close>
+								</Dialog.Description>
+							</Dialog.Header>
+						</form>
+					</Dialog.Content>
+				</Dialog.Root>
+			</div>
 		</div>
 		<!-- keywords -->
 		<div class="flex w-full flex-col gap-1.5">
 			<Label for="keywords" class="font-bold text-muted-foreground"
 				>Keywords (separate with commas)</Label
 			>
-			<Input type="text" id="keywords" name="keywords" />
+			<TagInput bind:value={keywords} />
+
+			<div class="hidden">
+				<input name="keywords" bind:value={keyValues} type="text" />
+			</div>
 		</div>
 
 		<!-- main image -->
@@ -212,7 +265,43 @@
 		</div>
 
 		<div class="actions flex items-center gap-2">
-			<Button class="flex items-center gap-2" type="submit">
+			<Dialog.Root>
+				<Dialog.Trigger>
+					<Button
+						class="flex items-center gap-2 px-6 hover:text-red-500"
+						on:click={(e) => {
+							e.preventDefault();
+						}}
+						variant="outline"
+					>
+						<p>Cancel</p>
+					</Button>
+				</Dialog.Trigger>
+				<Dialog.Content>
+					<Dialog.Header>
+						<Dialog.Title>Are you sure absolutely sure?</Dialog.Title>
+						<Dialog.Description>
+							This action cannot be undone. This will permanently discard your post.
+						</Dialog.Description>
+					</Dialog.Header>
+					<Dialog.Footer>
+						<Button
+							variant="outline"
+							class="border-red-500 bg-red-500 text-white hover:bg-transparent hover:text-inherit hover:text-red-500"
+							on:click={() => {
+								goBack();
+							}}
+						>
+							Delete
+						</Button>
+						<Dialog.Close>
+							<Button class="flex items-center gap-2 px-6">Cancel</Button>
+						</Dialog.Close>
+					</Dialog.Footer>
+				</Dialog.Content>
+			</Dialog.Root>
+
+			<Button class="flex items-center gap-2 px-6" type="submit">
 				<p>Publish</p>
 				{#if loading}
 					<Loader />
