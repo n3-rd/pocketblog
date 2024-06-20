@@ -11,9 +11,30 @@
 	import Published from '$lib/components/layout/posts/Published.svelte';
 	import UnPublished from '$lib/components/layout/posts/UnPublished.svelte';
 	import AllPosts from '$lib/components/layout/posts/AllPosts.svelte';
+	import { searchPostResults, searchPostTerm } from '$lib/stores/searchStore.js';
+	import { onMount } from 'svelte';
+	import { invalidateAll } from '$app/navigation';
 
 	export let data;
 	console.log(data);
+	let search: string;
+	let posts: any[] = data.posts;
+	let publishedPosts: any[];
+	let unpublishedPosts: any[];
+	let results: any[];
+
+	$: {
+		posts = data.posts;
+		publishedPosts = posts.filter((post: { published: any }) => post.published);
+		unpublishedPosts = posts.filter((post: { published: any }) => !post.published);
+	}
+
+	$: {
+		console.log($searchPostResults);
+		if ($searchPostResults !== null) {
+			posts = $searchPostResults;
+		}
+	}
 </script>
 
 <div class="flex min-h-screen w-full flex-col bg-muted/40">
@@ -56,13 +77,15 @@
 					</div>
 				</div>
 				<Tabs.Content value="all">
-					<AllPosts />
+					<AllPosts {posts} />
 				</Tabs.Content>
 				<Tabs.Content value="published">
-					<Published />
+					{#key posts}
+						<Published posts={publishedPosts} />
+					{/key}
 				</Tabs.Content>
 				<Tabs.Content value="unpublished">
-					<UnPublished />
+					<UnPublished posts={unpublishedPosts} />
 				</Tabs.Content>
 			</Tabs.Root>
 		</main>

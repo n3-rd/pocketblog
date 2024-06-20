@@ -29,6 +29,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      dayjs:
+        specifier: ^1.11.11
+        version: 1.11.11
       isomorphic-dompurify:
         specifier: ^2.12.0
         version: 2.12.0
@@ -41,6 +44,9 @@ importers:
       pocketbase:
         specifier: ^0.21.3
         version: 0.21.3
+      relativeTime:
+        specifier: link:dayjs/plugin/relativeTime
+        version: link:dayjs/plugin/relativeTime
       svelte-sonner:
         specifier: ^0.3.24
         version: 0.3.24(svelte@4.2.18)
@@ -805,6 +811,9 @@ packages:
   data-urls@5.0.0:
     resolution: {integrity: sha512-ZYP5VBHshaDAiVZxjbRVcFJpc+4xGgT0bK3vzy1HLN8jTO975HEbuYzZJcHoQEY5K1a0z8YayJkyVETa08eNTg==}
     engines: {node: '>=18'}
+
+  dayjs@1.11.11:
+    resolution: {integrity: sha512-okzr3f11N6WuqYtZSvm+F776mB41wRZMhKP+hc34YdW+KmtYYK9iqvHSwo2k9FEH3fhGXvOPV6yz2IcSrfRUDg==}
 
   debug@4.3.5:
     resolution: {integrity: sha512-pt0bNEmneDIvdL1Xsd9oDQ/wrQRkXDT4AUWlNZNPKvW5x/jyO9VFXkJUP07vQ2upmw5PlaITaPKc31jK13V+jg==}
@@ -2846,6 +2855,8 @@ snapshots:
     dependencies:
       whatwg-mimetype: 4.0.0
       whatwg-url: 14.0.0
+
+  dayjs@1.11.11: {}
 
   debug@4.3.5:
     dependencies:
