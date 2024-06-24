@@ -11,6 +11,7 @@
 	import { searchPostTerm } from '$lib/stores/searchStore';
 	import { enhance } from '$app/forms';
 	import { toast } from 'svelte-sonner';
+	import { invalidateAll } from '$app/navigation';
 	dayjs.extend(relativeTime);
 	export let posts;
 </script>
@@ -132,6 +133,7 @@
 											return async ({ result, update }) => {
 												if (result.status === 200) {
 													toast.success('Post deleted successfully');
+													invalidateAll();
 												} else {
 													toast.error('Failed to delete post');
 												}

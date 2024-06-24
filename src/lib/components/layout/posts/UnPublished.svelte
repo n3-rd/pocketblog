@@ -135,6 +135,7 @@
 												update({ invalidateAll: true });
 												if (result.status === 200) {
 													toast.success('Post deleted successfully');
+													invalidateAll();
 												} else {
 													toast.error('Failed to delete post');
 												}

@@ -15,7 +15,6 @@
 	import { onMount } from 'svelte';
 	dayjs.extend(relativeTime);
 	export let posts;
-
 </script>
 
 <Card.Root>
@@ -135,6 +134,7 @@
 											return async ({ result, update }) => {
 												if (result.status === 200) {
 													toast.success('Post deleted successfully');
+													invalidateAll();
 												} else {
 													toast.error('Failed to delete post');
 												}
