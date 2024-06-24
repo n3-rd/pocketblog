@@ -19,14 +19,13 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import { enhance } from '$app/forms';
 	import { toast } from 'svelte-sonner';
-	import type { SubmitFunction } from '@sveltejs/kit';
 	import Loader from '$lib/components/ui/Loader.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { goto, invalidateAll } from '$app/navigation';
+	import { Switch } from '$lib/components/ui/switch';
 	import TagInput from '$lib/components/layout/posts/TagInput.svelte';
 
 	export let data;
-	export let form;
 	console.log('data', data);
 
 	const carta = new Carta({
@@ -54,6 +53,8 @@
 	let loading = false;
 	let keywords: never[] = [];
 	let keyValues: string;
+	let form: HTMLFormElement;
+	let saveCheck = false;
 
 	$: {
 		keyValues = keywords.map((k) => k).join(', ');
@@ -72,25 +73,6 @@
 		});
 	};
 
-	const addPost: SubmitFunction = () => {
-		loading = true;
-
-		return async ({ update }) => {
-			loading = false;
-			await update();
-		};
-	};
-
-	const goBack = () => {
-		goto('/admin/app/');
-	};
-
-	$: {
-		if (form?.success) {
-			toast.success('Post created successfully');
-		}
-	}
-
 	onMount(() => {
 		fixCarta();
 		const toolbar = document.querySelector('.carta-toolbar-left');
@@ -105,7 +87,17 @@
 	action="?/create-post"
 	class="container flex flex-col items-center gap-4 pb-40 pt-14 text-left"
 	enctype="multipart/form-data"
-	use:enhance={addPost}
+	bind:this={form}
+	use:enhance={() => {
+		return async ({ result, update }) => {
+			if (result.status === 200) {
+				toast.success('Post created successfully');
+				goto('/admin/app/');
+			} else {
+				toast.error('Failed to create post');
+			}
+		};
+	}}
 >
 	<div class="flex w-full max-w-[1200px] flex-col items-center gap-16">
 		<!-- title preview -->
@@ -123,6 +115,7 @@
 			<Label for="title" class="font-bold text-muted-foreground">Title</Label>
 			<Input type="text" id="title" name="title" bind:value={title} />
 		</div>
+
 		<!-- slug -->
 		<div class="flex w-full flex-col gap-1.5">
 			<div class="flex items-center gap-1">
@@ -253,6 +246,23 @@
 			>
 			<MarkdownEditor {carta} bind:value={content} mode="auto" />
 		</div>
+
+		<div class=" flex w-full flex-row gap-1.5">
+			<Checkbox id="published" name="publish" bind:checked={saveCheck} />
+			<input
+				type="checkbox"
+				id="published"
+				name="published"
+				class="hidden"
+				bind:checked={saveCheck}
+			/>
+			<Label
+				for="publish"
+				class="text-lg font-medium capitalize leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+			>
+				Save without publishing
+			</Label>
+		</div>
 	</div>
 
 	<div
@@ -289,7 +299,7 @@
 							variant="outline"
 							class="border-red-500 bg-red-500 text-white hover:bg-transparent hover:text-inherit hover:text-red-500"
 							on:click={() => {
-								goBack();
+								goto('/admin/app/');
 							}}
 						>
 							Delete
@@ -302,7 +312,11 @@
 			</Dialog.Root>
 
 			<Button class="flex items-center gap-2 px-6" type="submit">
-				<p>Publish</p>
+				{#if saveCheck}
+					Save Post
+				{:else}
+					Publish
+				{/if}
 				{#if loading}
 					<Loader />
 				{/if}
@@ -316,7 +330,7 @@
 				</Popover.Trigger>
 				<Popover.Content class="max-w-56">
 					<div class="flex flex-col gap-2">
-						<Button variant="outline">Unpublish</Button>
+						<Button variant="outline" on:click={() => publishWithoutCheck()}>Draft</Button>
 						<Button
 							variant="outline"
 							class="border-red-500 text-red-500 hover:bg-red-500 hover:text-inherit">Delete</Button

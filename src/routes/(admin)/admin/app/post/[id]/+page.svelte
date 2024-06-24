@@ -21,7 +21,9 @@
 	import { toast } from 'svelte-sonner';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import Loader from '$lib/components/ui/Loader.svelte';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import TagInput from '$lib/components/layout/posts/TagInput.svelte';
 
 	export let data;
 	export let form;
@@ -50,8 +52,15 @@
 	let description = post.description || '';
 	let content: string = post.content || '';
 	let published = post.published || false;
-	let tags = data?.tags;
+	let tags: any;
 	let loading = false;
+	let keywords: never[] = post.keywords.split(', ') || [];
+	let keyValues: string;
+
+	$: {
+		keyValues = keywords.map((k) => k).join(', ');
+		tags = data?.tags;
+	}
 
 	const generateSlug = () => {
 		slug = slugify(title);
@@ -65,14 +74,6 @@
 		});
 	};
 
-	const editPost: SubmitFunction = () => {
-		loading = true;
-
-		return async ({ update }) => {
-			loading = false;
-			await update();
-		};
-	};
 	$: {
 		if (form?.success) {
 			toast.success('Post created successfully');
@@ -93,7 +94,16 @@
 	action="?/edit-post"
 	class="container flex flex-col items-center gap-4 pb-40 pt-14 text-left"
 	enctype="multipart/form-data"
-	use:enhance={editPost}
+	use:enhance={() => {
+		return async ({ result, update }) => {
+			if (result.status === 200) {
+				toast.success('Post updated successfully');
+				goto('/admin/app/');
+			} else {
+				toast.error('Failed to update post');
+			}
+		};
+	}}
 >
 	<div class="flex w-full max-w-[1200px] flex-col items-center gap-16">
 		<!-- title preview -->
@@ -154,7 +164,7 @@
 		</div>
 
 		<!-- tags -->
-		<div class="tags flex w-full flex-col gap-1.5">
+		<div class="tags flex w-full flex-col gap-2">
 			{#each tags as tag}
 				<div class="flex w-full flex-row items-center gap-1.5">
 					<Checkbox id={tag.id} bind:checked={tag.checked} />
@@ -168,19 +178,57 @@
 					/>
 					<Label
 						for={tag.id}
-						class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+						class="text-lg font-medium capitalize leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 					>
 						{tag.name}
 					</Label>
 				</div>
 			{/each}
+
+			<div class="w-full">
+				<Dialog.Root>
+					<Dialog.Trigger>
+						<Button variant="secondary">Add new tag</Button>
+					</Dialog.Trigger>
+					<Dialog.Content>
+						<form
+							method="POST"
+							action="?/add-tag"
+							use:enhance={() => {
+								return async ({ result, update }) => {
+									invalidateAll();
+									if (result.status === 200) {
+										toast.success('Tag added successfully');
+									} else {
+										toast.error('Failed to add tag');
+									}
+								};
+							}}
+						>
+							<Dialog.Header>
+								<Dialog.Title>Add new tag</Dialog.Title>
+								<Dialog.Description>
+									<Input type="text" placeholder="Type tag name here" name="tag" />
+									<Dialog.Close>
+										<Button variant="default" type="submit" class="mt-4 w-full">Add tag</Button>
+									</Dialog.Close>
+								</Dialog.Description>
+							</Dialog.Header>
+						</form>
+					</Dialog.Content>
+				</Dialog.Root>
+			</div>
 		</div>
 		<!-- keywords -->
 		<div class="flex w-full flex-col gap-1.5">
 			<Label for="keywords" class="font-bold text-muted-foreground"
 				>Keywords (separate with commas)</Label
 			>
-			<Input type="text" id="keywords" name="keywords" />
+			<TagInput bind:value={keywords} />
+
+			<div class="">
+				<input name="keywords" bind:value={keyValues} type="text" class="text-white" />
+			</div>
 		</div>
 
 		<!-- main image -->
@@ -215,6 +263,41 @@
 		</div>
 
 		<div class="actions flex items-center gap-2">
+			<Dialog.Root>
+				<Dialog.Trigger>
+					<Button
+						class="flex items-center gap-2 px-6 hover:text-red-500"
+						on:click={(e) => {
+							e.preventDefault();
+						}}
+						variant="outline"
+					>
+						<p>Cancel</p>
+					</Button>
+				</Dialog.Trigger>
+				<Dialog.Content>
+					<Dialog.Header>
+						<Dialog.Title>Are you sure absolutely sure?</Dialog.Title>
+						<Dialog.Description>
+							This action cannot be undone. This will permanently discard any changes you have made.
+						</Dialog.Description>
+					</Dialog.Header>
+					<Dialog.Footer>
+						<Button
+							variant="outline"
+							class="border-red-500 bg-red-500 text-white hover:bg-transparent hover:text-inherit hover:text-red-500"
+							on:click={() => {
+								goto('/admin/app/');
+							}}
+						>
+							Discard
+						</Button>
+						<Dialog.Close>
+							<Button class="flex items-center gap-2 px-6">Cancel</Button>
+						</Dialog.Close>
+					</Dialog.Footer>
+				</Dialog.Content>
+			</Dialog.Root>
 			<Button class="flex items-center gap-2" type="submit">
 				<p>Update</p>
 				{#if loading}

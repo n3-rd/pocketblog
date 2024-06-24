@@ -96,5 +96,23 @@ export const actions: Actions = {
 		return {
 			success: true
 		};
+	},
+	'add-tag': async ({ request, locals }) => {
+		if (!locals.user) {
+			return {
+				status: 401,
+				body: {
+					message: 'Unauthorized'
+				}
+			};
+		}
+		const data: FormData = await request.formData();
+		const tag = data.get('tag');
+		locals.pb.collection('tags').create({
+			name: tag
+		});
+		return {
+			success: true
+		};
 	}
 };

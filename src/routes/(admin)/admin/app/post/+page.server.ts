@@ -12,6 +12,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
 	'create-post': async ({ request, locals }) => {
+		// @ts-expect-error - formData is not yet in the types
 		if (!locals.user) {
 			return {
 				status: 401,
@@ -29,9 +30,17 @@ export const actions: Actions = {
 		const md = data.get('md');
 		const image = data.get('image');
 		const tags = data.getAll('tags');
+		const publishedCheckbox = data.getAll('published');
+		let published;
 
-		console.log('tags', tags);
-		// console.log('pb', locals.user);
+		if (publishedCheckbox.includes('on')) {
+			console.log('published', publishedCheckbox);
+			published = false;
+		} else {
+			console.log('not published', publishedCheckbox);
+			published = true;
+		}
+
 		locals.pb.collection('posts').create({
 			title: title,
 			slug: slug,
@@ -41,50 +50,9 @@ export const actions: Actions = {
 			tags: tags,
 			image: image,
 			author: [locals.user.id],
-			published: true
+			published: published
 		});
 
-		return {
-			success: true
-		};
-	},
-	'edit-post': async ({ request, locals }) => {
-		if (!locals.user) {
-			return {
-				status: 401,
-				body: {
-					message: 'Unauthorized'
-				}
-			};
-		}
-		const data: FormData = await request.formData();
-		const postId = data.get('postId');
-		const updatedData = {
-			title: data.get('title'),
-			slug: data.get('slug'),
-			description: data.get('description'),
-			keywords: data.get('keywords'),
-			content: data.get('md'),
-			tags: data.getAll('tags'),
-			image: data.get('image')
-		};
-		locals.pb.collection('posts').doc(postId).update(updatedData);
-		return {
-			success: true
-		};
-	},
-	'delete-post': async ({ request, locals }) => {
-		if (!locals.user) {
-			return {
-				status: 401,
-				body: {
-					message: 'Unauthorized'
-				}
-			};
-		}
-		const data: FormData = await request.formData();
-		const postId = data.get('postId');
-		locals.pb.collection('posts').doc(postId).delete();
 		return {
 			success: true
 		};
