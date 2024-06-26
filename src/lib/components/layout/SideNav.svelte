@@ -6,8 +6,14 @@
 
 	import { toggleMode } from 'mode-watcher';
 	import { Button } from '$lib/components/ui/button/index';
-	import type { ComponentType } from 'svelte';
-	import type { Icon } from 'lucide-svelte';
+	import { page } from '$app/stores';
+
+	let currUrl: string;
+
+	$: {
+		currUrl = $page.url.pathname;
+		console.log(currUrl);
+	}
 
 	const navItems = [
 		{ name: 'Posts', icon: NotebookPen, href: '/admin/app' },
@@ -24,7 +30,7 @@
 				<Tooltip.Trigger asChild let:builder>
 					<a
 						{href}
-						class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+						class={`flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 ${currUrl === href ? 'bg-primary text-background hover:text-background' : 'text-muted-foreground'}`}
 						use:builder.action
 						{...builder}
 					>
