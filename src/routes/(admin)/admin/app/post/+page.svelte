@@ -55,6 +55,11 @@
 	let keyValues: string;
 	let form: HTMLFormElement;
 	let saveCheck = false;
+	let imageInput;
+	let container;
+	let image;
+	let placeholder;
+	let showImage = false;
 
 	$: {
 		keyValues = keywords.map((k) => k).join(', ');
@@ -73,6 +78,27 @@
 		});
 	};
 
+	function onChange(file) {
+		if (!imageInput) {
+			showImage = false;
+			return;
+		}
+
+		// const file = imageInput.target.files[0];
+
+		if (file) {
+			showImage = true;
+
+			const reader = new FileReader();
+			reader.addEventListener('load', function () {
+				image.setAttribute('src', reader.result);
+			});
+			reader.readAsDataURL(file);
+
+			return;
+		}
+		showImage = false;
+	}
 	onMount(() => {
 		fixCarta();
 		const toolbar = document.querySelector('.carta-toolbar-left');
@@ -232,11 +258,26 @@
 			<Input
 				id="picture"
 				type="file"
+				bind:this={imageInput}
+				on:change={(e) => {
+					console.log(e.target.files[0]);
+					onChange(e.target.files[0]);
+				}}
 				class="border-dashed"
 				name="image"
 				multiple={false}
 				accept="image/*"
 			/>
+			{#if showImage}
+				<div bind:this={container} class="h-56 w-52">
+					<img
+						bind:this={image}
+						src=""
+						alt="Preview"
+						class="h-full w-full rounded-xl object-cover object-center"
+					/>
+				</div>
+			{/if}
 		</div>
 
 		<!-- content -->
@@ -321,23 +362,6 @@
 					<Loader />
 				{/if}
 			</Button>
-
-			<Popover.Root>
-				<Popover.Trigger>
-					<Button variant="ghost">
-						<MoreHorizontal />
-					</Button>
-				</Popover.Trigger>
-				<Popover.Content class="max-w-56">
-					<div class="flex flex-col gap-2">
-						<Button variant="outline" on:click={() => publishWithoutCheck()}>Draft</Button>
-						<Button
-							variant="outline"
-							class="border-red-500 text-red-500 hover:bg-red-500 hover:text-inherit">Delete</Button
-						>
-					</div>
-				</Popover.Content>
-			</Popover.Root>
 		</div>
 	</div>
 </form>
