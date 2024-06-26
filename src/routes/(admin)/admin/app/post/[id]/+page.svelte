@@ -226,7 +226,7 @@
 			>
 			<TagInput bind:value={keywords} />
 
-			<div class="">
+			<div class="hidden">
 				<input name="keywords" bind:value={keyValues} type="text" class="text-white" />
 			</div>
 		</div>

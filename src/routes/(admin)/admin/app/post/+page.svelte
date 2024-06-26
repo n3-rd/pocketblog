@@ -24,6 +24,8 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import { Switch } from '$lib/components/ui/switch';
 	import TagInput from '$lib/components/layout/posts/TagInput.svelte';
+	import { slide } from 'svelte/transition';
+	import { quintOut } from 'svelte/easing';
 
 	export let data;
 	console.log('data', data);
@@ -111,7 +113,7 @@
 <form
 	method="POST"
 	action="?/create-post"
-	class="container flex flex-col items-center gap-4 pb-40 pt-14 text-left"
+	class="container flex flex-col items-center gap-4 pb-40 pt-14 text-left transition-all duration-500 ease-in-out"
 	enctype="multipart/form-data"
 	bind:this={form}
 	use:enhance={() => {
@@ -268,6 +270,7 @@
 				multiple={false}
 				accept="image/*"
 			/>
+
 			{#if showImage}
 				<div bind:this={container} class="h-56 w-52">
 					<img
@@ -275,6 +278,7 @@
 						src=""
 						alt="Preview"
 						class="h-full w-full rounded-xl object-cover object-center"
+						transition:slide={{ delay: 250, duration: 300, easing: quintOut, axis: 'y' }}
 					/>
 				</div>
 			{/if}

@@ -4,6 +4,8 @@
 	import { Button } from '$lib/components/ui/button/index';
 
 	import { Input } from '$lib/components/ui/input/index';
+	import { slide } from 'svelte/transition';
+	import { quintOut } from 'svelte/easing';
 
 	/**
 	 * @type {any[]}
@@ -59,9 +61,12 @@
 	/>
 	<div class="flex items-center gap-3 py-2">
 		{#each value as t, i}
-			<Button variant="secondary" class="flex items-center gap-2">
-				<span>{t}</span> <a href="#del" on:click={() => del(i)}>⨉</a>
-			</Button>
+			<span transition:slide={{ delay: 250, duration: 300, easing: quintOut, axis: 'y' }}>
+				<Button variant="secondary" class="flex items-center gap-2">
+					<span>{t}</span> <a href="#del" on:click={() => del(i)}>⨉</a>
+				</Button>
+			</span>
+
 			<!-- <span class="tag"> </span> -->
 		{/each}
 	</div>
