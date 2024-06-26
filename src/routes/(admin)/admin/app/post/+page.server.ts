@@ -2,7 +2,7 @@ import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	// const tags = locals.pb.collection('tags');
+	// @ts-expect-error pn does not exits on type locals
 	const tags = await locals.pb.collection('tags').getFullList();
 
 	return {
@@ -41,6 +41,7 @@ export const actions: Actions = {
 			published = true;
 		}
 
+		// @ts-expect-error pb does not exits on type locals
 		locals.pb.collection('posts').create({
 			title: title,
 			slug: slug,
@@ -49,6 +50,7 @@ export const actions: Actions = {
 			content: md,
 			tags: tags,
 			image: image,
+			// @ts-expect-error user does not exits on type locals
 			author: [locals.user.id],
 			published: published
 		});
@@ -58,6 +60,7 @@ export const actions: Actions = {
 		};
 	},
 	'add-tag': async ({ request, locals }) => {
+		// @ts-expect-error user does not exits on type locals
 		if (!locals.user) {
 			return {
 				status: 401,
@@ -68,6 +71,7 @@ export const actions: Actions = {
 		}
 		const data: FormData = await request.formData();
 		const tag = data.get('tag');
+		// @ts-expect-error pb does not exits on type locals
 		locals.pb.collection('tags').create({
 			name: tag
 		});

@@ -24,6 +24,9 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import TagInput from '$lib/components/layout/posts/TagInput.svelte';
+	import { slide } from 'svelte/transition';
+	import { quintOut } from 'svelte/easing';
+	import { PUBLIC_DB_URL } from '$env/static/public';
 
 	export let data;
 	export let form;
@@ -56,10 +59,13 @@
 	let loading = false;
 	let keywords: never[] = post.keywords.split(', ') || [];
 	let keyValues: string;
+	let imageUrl: any;
 
 	$: {
 		keyValues = keywords.map((k) => k).join(', ');
 		tags = data?.tags;
+		console.log('image', post.image);
+		imageUrl = post.image.url;
 	}
 
 	const generateSlug = () => {
@@ -242,6 +248,17 @@
 				multiple={false}
 				accept="image/*"
 			/>
+
+			{#if post.image}
+				<div class="h-56 w-52">
+					<img
+						src={`${PUBLIC_DB_URL}/api/files/${post.collectionId}/${post.id}/${post.image}`}
+						alt="Preview"
+						class="h-full w-full rounded-xl object-cover object-center"
+						transition:slide={{ delay: 250, duration: 300, easing: quintOut, axis: 'y' }}
+					/>
+				</div>
+			{/if}
 		</div>
 
 		<!-- content -->
